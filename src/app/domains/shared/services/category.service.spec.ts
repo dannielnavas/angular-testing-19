@@ -5,9 +5,12 @@ import {
   HttpMethod,
   SpectatorHttp,
 } from '@ngneat/spectator/jest';
+import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
 import { generateFakeCategory } from '../models/category.mock';
 import { Category } from '../models/category.model';
 import { CategoryService } from './category.service';
+
+enableFetchMocks();
 
 describe('CategoryService', () => {
   let spectator: SpectatorHttp<CategoryService>;
@@ -15,6 +18,7 @@ describe('CategoryService', () => {
 
   beforeEach(() => {
     spectator = createHttp();
+    fetchMock.resetMocks();
   });
 
   describe('getAll', () => {
@@ -93,9 +97,7 @@ describe('CategoryService', () => {
       ];
 
       // Mock global fetch
-      global.fetch = jest.fn().mockResolvedValueOnce({
-        json: jest.fn().mockResolvedValueOnce(mockCategories),
-      });
+      fetchMock.mockResponseOnce(JSON.stringify(mockCategories));
 
       // Act
       const result = await spectator.service.getAllPromise();
@@ -111,10 +113,8 @@ describe('CategoryService', () => {
 
     it('should handle empty response with fetch API', async () => {
       // Arrange
-      // Mock global fetch
-      global.fetch = jest.fn().mockResolvedValueOnce({
-        json: jest.fn().mockResolvedValueOnce([]),
-      });
+      // Mock global fetch;
+      fetchMock.mockResponseOnce(JSON.stringify([]));
 
       // Act
       const result = await spectator.service.getAllPromise();
@@ -127,9 +127,7 @@ describe('CategoryService', () => {
     it('should handle network error with fetch API', async () => {
       // Arrange
       // Mock global fetch to reject
-      global.fetch = jest
-        .fn()
-        .mockRejectedValueOnce(new Error('Network error'));
+      fetchMock.mockRejectOnce(new Error('Network error'));
 
       // Act & Assert
       await expect(spectator.service.getAllPromise()).rejects.toThrow(
@@ -140,9 +138,7 @@ describe('CategoryService', () => {
     it('should handle JSON parsing error with fetch API', async () => {
       // Arrange
       // Mock global fetch with JSON parse error
-      global.fetch = jest.fn().mockResolvedValueOnce({
-        json: jest.fn().mockRejectedValueOnce(new Error('Invalid JSON')),
-      });
+      fetchMock.mockResponseOnce('Invalid JSON');
 
       // Act & Assert
       await expect(spectator.service.getAllPromise()).rejects.toThrow(

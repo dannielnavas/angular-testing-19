@@ -30,4 +30,4 @@ dist/store/browser/*
 
 ## Promp
 
-generate unit test for ProductServices validate both success and failure, and include edge cases. To create proper test, use the current spec code as a guideand Spectator and Jest
+generate unit test for ProductServices validate both success and failure, and include edge cases. To create proper test, use the current spec code as a guide and Spectator and Jest

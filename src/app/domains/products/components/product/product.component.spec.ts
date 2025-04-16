@@ -39,4 +39,29 @@ describe('ProductComponent', () => {
     const element = spectator.query(byTestId('product-title'));
     expect(element).toHaveText(mockProduct.title);
   });
+
+  // AAA
+
+  it('Should emit a product when the button is clicked', () => {
+    // Arrange
+    const emitSpy = jest.spyOn(spectator.component.addToCart, 'emit');
+    // Act
+    spectator.detectChanges();
+    spectator.component.addToCartHandler();
+    // Assert
+    expect(emitSpy).toHaveBeenCalledWith(mockProduct);
+    expect(emitSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should emit a product when the button is clicked', () => {
+    // Arrange
+    const emitSpy = jest.spyOn(spectator.component.addToCart, 'emit');
+    // Act
+    spectator.detectChanges();
+    // const element = spectator.query(byTestId('add-to-cart-button'));
+    spectator.click(byTestId('add-to-cart-button'));
+    // Assert
+    expect(emitSpy).toHaveBeenCalledWith(mockProduct);
+    expect(emitSpy).toHaveBeenCalledTimes(1);
+  });
 });

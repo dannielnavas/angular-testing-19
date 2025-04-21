@@ -11,7 +11,7 @@
       </div>
     </div>
     <div class="flex items-center justify-center mt-1">
-      <div class="grid grid-cols-3 gap-1">
+      <div class="grid grid-cols-3 gap-1" data-testid="gallery">
         @for (img of data.images; track img) {
         <img width="80" height="80" tabindex="0" role="button" (keydown.enter)="changeCover(img)" alt="ecommerce"
           class="object-cover object-center rounded border-2 border-gray-200" [ngSrc]="img" (click)="changeCover(img)"

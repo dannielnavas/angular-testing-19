@@ -1,4 +1,5 @@
 import { DeferBlockBehavior } from '@angular/core/testing';
+import { faker } from '@faker-js/faker/.';
 import {
   byTestId,
   createRoutingFactory,
@@ -36,7 +37,14 @@ describe('ProductDetail', () => {
   let spectator: Spectator<ProductDetailComponent>;
   let productService: SpyObject<ProductService>;
 
-  const mockProduct = generateFakeProduct();
+  const mockProduct = generateFakeProduct({
+    images: [
+      faker.image.url(),
+      faker.image.url(),
+      faker.image.url(),
+      faker.image.url(),
+    ],
+  });
 
   const createComponent = createRoutingFactory({
     component: ProductDetailComponent,
@@ -88,5 +96,18 @@ describe('ProductDetail', () => {
     await spectator.deferBlock().renderComplete();
     const related = spectator.query(RelatedComponent);
     expect(related).toBeTruthy();
+  });
+
+  it('Should change the cover when the image is clicked', () => {
+    spectator.detectChanges();
+    const gallery = spectator.query(byTestId('gallery'));
+    const images = gallery?.querySelectorAll('img');
+    expect(images).toHaveLength(mockProduct.images.length);
+    if (images && images.length > 0) {
+      spectator.click(images[1]);
+      const cover = spectator.query<HTMLImageElement>(byTestId('cover'));
+      expect(cover).toBeTruthy();
+      expect(cover?.src).toBe(mockProduct.images[1]);
+    }
   });
 });
